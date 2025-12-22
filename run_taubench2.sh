@@ -11,11 +11,12 @@ export HOSTED_VLLM_API_BASE="http://localhost:8000/v1"
 NUM_TASKS=3
 NUM_TRIAL=1
 USER_LLM_NAME="gpt-4o-mini"
+DOMAIN="airline"
 
 # 2. Run the TauBench2
-uv run tau2 run --domain airline \
+uv run tau2 run --domain $DOMAIN \
+    --task-split base \
     --agent-llm hosted_vllm/VAETKI \
     --user-llm $USER_LLM_NAME \
     --num-trials $NUM_TRIAL \
-    --num-tasks $NUM_TASKS \
-    --log-level DEBUG
+    --num-tasks $NUM_TASKS 

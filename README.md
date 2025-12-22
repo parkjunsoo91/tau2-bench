@@ -73,17 +73,16 @@ cd tau2-bench
 
 2. Create a new environment (optional)
 
-$\tau^2$-bench requires Python 3.10 or higher. You may create and activate a new environment:
+$\tau^2$-bench requires Python 3.10 or higher. Also, you need **uv** installed.
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
 3. Install tau2
 
 ```bash
-pip install -e .
+uv pip install -e .
 ```
 
 This will enable you to run the `tau2` command.
@@ -137,7 +136,7 @@ This will start a local server for your model, typically at `http://localhost:80
 
 ### 3. Run the Agent Evaluation
 
-Once the model is being served, open a new terminal and run the evaluation script. This script will execute the benchmark against your model for all required domains.
+Once your model server is running, open `run_taubench2.sh` and set the configurations. Then, simply run:
 
 ```bash
 bash run_taubench2.sh

@@ -212,9 +212,9 @@ def generate(
     if tools and tool_choice is None:
         tool_choice = "auto"
     try:
-        print('============== query ===============')
-        print(litellm_messages)
-        print('======================================')
+        # print('============== query ===============')
+        # print(litellm_messages)
+        # print('======================================')
         response = completion(
             model=model,
             messages=litellm_messages,
