@@ -484,6 +484,9 @@ class Orchestrator:
             agent_msg, self.agent_state = self.agent.generate_next_message(
                 self.message, self.agent_state
             )
+            print(agent_msg)
+            logger.debug(self.user_state)
+            logger.debug(agent_msg)
             agent_msg.validate()
             if self.agent.is_stop(agent_msg):
                 self.done = True

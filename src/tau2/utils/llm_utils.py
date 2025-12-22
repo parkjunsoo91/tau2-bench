@@ -141,7 +141,11 @@ def to_litellm_messages(messages: list[Message]) -> list[dict]:
     litellm_messages = []
     for message in messages:
         if isinstance(message, UserMessage):
-            litellm_messages.append({"role": "user", "content": message.content})
+            if litellm_messages[0]['role'] == 'system' and len(litellm_messages) == 1:
+                system_message = litellm_messages.pop(0)
+                litellm_messages.append({"role": "user", "content": system_message['content'] + "\n\n" + message.content})
+            else:
+                litellm_messages.append({"role": "user", "content": message.content})
         elif isinstance(message, AssistantMessage):
             tool_calls = None
             if message.is_tool_call():
@@ -173,7 +177,9 @@ def to_litellm_messages(messages: list[Message]) -> list[dict]:
                 }
             )
         elif isinstance(message, SystemMessage):
+            # litellm_messages.append({"role": "system", "content": message.content})
             litellm_messages.append({"role": "system", "content": message.content})
+
     return litellm_messages
 
 
@@ -206,6 +212,9 @@ def generate(
     if tools and tool_choice is None:
         tool_choice = "auto"
     try:
+        print('============== query ===============')
+        print(litellm_messages)
+        print('======================================')
         response = completion(
             model=model,
             messages=litellm_messages,
@@ -213,6 +222,9 @@ def generate(
             tool_choice=tool_choice,
             **kwargs,
         )
+        # print('============== response ===============')
+        # print(response)
+        # print('======================================')
     except Exception as e:
         logger.error(e)
         raise e
@@ -241,6 +253,13 @@ def generate(
     ]
     tool_calls = tool_calls or None
 
+    # print('============== content ===============')
+    # print(content)
+    # print('======================================')
+    
+    # print('============ tool_calls ==============')
+    # print(tool_calls)
+    # print('======================================')
     message = AssistantMessage(
         role="assistant",
         content=content,

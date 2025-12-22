@@ -67,7 +67,7 @@ All the information that an agent developer needs to build an agent for a domain
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/sierra-research/tau2-bench
+git clone https://github.com/cyc9805/tau2-bench.git
 cd tau2-bench
 ```
 
@@ -109,30 +109,43 @@ To remove all the generated files and the virtual environment, run:
 make clean
 ```
 
-## Quick Start
+## Quick Start for Evaluating WBL Models
 
-### Setup LLM API keys
+This guide provides a streamlined process for evaluating WBL models using the `tau2-bench` framework.
 
-We use [LiteLLM](https://github.com/BerriAI/litellm) to manage LLM APIs, so you can use any LLM provider supported by LiteLLM.
+### 1. Set Up API Keys
 
-To provide your API keys, copy `.env.example` as `.env` and edit it to include your API keys.
+The framework uses [LiteLLM](https://github.com/BerriAI/litellm) to connect to various LLM providers. You'll need to provide your API keys for any services you use (like OpenAI for the user simulator).
 
-### Run agent evaluation
-
-To run a test evaluation on only 5 tasks with 1 trial per task, run:
-
+Copy the example environment file and add your credentials:
 ```bash
-tau2 run \ 
---domain airline \
---agent-llm gpt-4.1 \
---user-llm gpt-4.1 \
---num-trials 1 \
---num-tasks 5
+cp .env.example .env
+# Now, edit the .env file to add your API keys
+nano .env
 ```
 
-Results will be saved in `data/tau2/simulations/`.
+### 2. Serve the Model with vLLM
 
-> **💡 Tip**: For full agent evaluation that matches the original τ²-bench methodology, remove `--num-tasks` and use `--task-split base` to evaluate on the complete task set.
+To run evaluations efficiently, the model must first be served as an API endpoint using vLLM.
+
+First, edit the `serve_model.sh` script to set the `CHECKPOINT_PATH` variable to the model checkpoint you want to evaluate. Then, execute the script:
+
+```bash
+bash serve_model.sh
+```
+This will start a local server for your model, typically at `http://localhost:8000`.
+
+### 3. Run the Agent Evaluation
+
+Once the model is being served, open a new terminal and run the evaluation script. This script will execute the benchmark against your model for all required domains.
+
+```bash
+bash run_taubench2.sh
+```
+
+The results, including detailed trajectory files, will be saved in the `data/tau2/simulations/` directory. Each run will be saved in a file corresponding to its domain (e.g., `my_model_airline.json`, `my_model_retail.json`).
+
+> **💡 Tip**: The `run_taubench2.sh` script is configured for a full evaluation run suitable for leaderboard submission. It evaluates all tasks in the `base` split for each domain.
 
 ## Command Line Interface
 
