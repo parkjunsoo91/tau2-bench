@@ -394,7 +394,11 @@ class Orchestrator:
         start = time.perf_counter()
         self.initialize()
         while not self.done:
-            self.step()
+            try:
+                self.step()
+            except Exception as e:
+                self.done = True
+                self.termination_reason = TerminationReason.AGENT_ERROR
             # Checking for maximum steps and errors only if the last message is not to the environment
             if self.to_role == Role.ENV:
                 continue
